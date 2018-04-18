@@ -17,6 +17,7 @@ class DotterbolagetFilter implements FilterInterface
 
     public function filterDonor(Donor $donor): bool
     {
-        return !!preg_match('/dotterbolaget/i', $donor->getComment());
+        return !!preg_match('/dotterbolaget/i', $donor->getComment())
+            && $donor->getState()->getStateId() == States::ACTIVE;
     }
 }
