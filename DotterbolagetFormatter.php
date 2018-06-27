@@ -46,11 +46,13 @@ class DotterbolagetFormatter implements FormatterInterface
             "{$donor->getPostalAddress()->getPostalCode()} {$donor->getPostalAddress()->getPostalCity()}"
         ]);
 
-        $this->addresses[] = implode(PHP_EOL, $address);
+        $this->addresses[$donor->getName()] = implode(PHP_EOL, $address);
     }
 
     public function dump(): void
     {
+        ksort($this->addresses);
+
         foreach (array_chunk($this->addresses, self::ITEMS_ON_LINE) as $chunk) {
             $this->output->writeln('"' . implode('", "', $chunk) . '"');
         }
