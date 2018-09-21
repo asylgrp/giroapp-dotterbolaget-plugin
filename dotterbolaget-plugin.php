@@ -4,9 +4,26 @@ declare(strict_types = 1);
 
 namespace byrokrat\GiroappDotterbolagetPlugin;
 
+use byrokrat\giroapp\Filter\FilterInterface;
 use byrokrat\giroapp\Formatter\FormatterInterface;
 use byrokrat\giroapp\Model\Donor;
+use byrokrat\giroapp\Plugin\Plugin;
+use byrokrat\giroapp\States;
 use Symfony\Component\Console\Output\OutputInterface;
+
+class DotterbolagetFilter implements FilterInterface
+{
+    public function getName(): string
+    {
+        return 'dotterbolaget';
+    }
+
+    public function filterDonor(Donor $donor): bool
+    {
+        return !!preg_match('/dotterbolaget/i', $donor->getComment())
+            && $donor->getState()->getStateId() == States::ACTIVE;
+    }
+}
 
 class DotterbolagetFormatter implements FormatterInterface
 {
@@ -58,3 +75,8 @@ class DotterbolagetFormatter implements FormatterInterface
         }
     }
 }
+
+return new Plugin(
+    new DotterbolagetFilter,
+    new DotterbolagetFormatter
+);
