@@ -47,13 +47,13 @@ class DotterbolagetFormatter implements FormatterInterface
         return 'dotterbolaget';
     }
 
-    public function setOutput(OutputInterface $output): void
+    public function initialize(OutputInterface $output): void
     {
         $this->output = $output;
         $this->addresses = [];
     }
 
-    public function addDonor(Donor $donor): void
+    public function formatDonor(Donor $donor): void
     {
         $address = array_filter([
             $donor->getName(),
@@ -66,7 +66,7 @@ class DotterbolagetFormatter implements FormatterInterface
         $this->addresses[$donor->getName()] = implode(PHP_EOL, $address);
     }
 
-    public function dump(): void
+    public function finalize(): void
     {
         ksort($this->addresses);
 
