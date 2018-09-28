@@ -8,7 +8,6 @@ use byrokrat\giroapp\Filter\FilterInterface;
 use byrokrat\giroapp\Formatter\FormatterInterface;
 use byrokrat\giroapp\Model\Donor;
 use byrokrat\giroapp\Plugin\Plugin;
-use byrokrat\giroapp\States;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class DotterbolagetFilter implements FilterInterface
@@ -20,8 +19,17 @@ class DotterbolagetFilter implements FilterInterface
 
     public function filterDonor(Donor $donor): bool
     {
-        return !!preg_match('/dotterbolaget/i', $donor->getComment())
-            && $donor->getState()->getStateId() == States::ACTIVE;
+        if (!$donor->getState()->isActive()) {
+            return false;
+        }
+
+        foreach ($donor->getAttributes() as $key => $value) {
+            if (preg_match('/^dotterbolaget$/i', $key) {
+                return !!$value;
+            }
+        }
+
+        return !!preg_match('/dotterbolaget/i', $donor->getComment());
     }
 }
 
