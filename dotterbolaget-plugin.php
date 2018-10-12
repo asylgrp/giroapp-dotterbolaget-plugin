@@ -24,7 +24,7 @@ class DotterbolagetFilter implements FilterInterface
         }
 
         foreach ($donor->getAttributes() as $key => $value) {
-            if (preg_match('/^dotterbolaget$/i', $key) {
+            if (preg_match('/^dotterbolaget$/i', $key)) {
                 return !!$value;
             }
         }
