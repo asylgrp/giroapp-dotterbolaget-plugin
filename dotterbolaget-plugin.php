@@ -6,20 +6,28 @@ namespace byrokrat\GiroappDotterbolagetPlugin;
 
 use byrokrat\giroapp\Filter\FilterInterface;
 use byrokrat\giroapp\Formatter\FormatterInterface;
-use byrokrat\giroapp\Model\Donor;
+use byrokrat\giroapp\Domain\Donor;
+use byrokrat\giroapp\Domain\State\Active;
 use byrokrat\giroapp\Plugin\Plugin;
+use byrokrat\giroapp\Plugin\ApiVersionConstraint;
 use Symfony\Component\Console\Output\OutputInterface;
+
+return new Plugin(
+    new ApiVersionConstraint('DotterbolagetPlugin', '1.*'),
+    new DotterbolagetFilter,
+    new DotterbolagetFormatter
+);
 
 class DotterbolagetFilter implements FilterInterface
 {
     public function getName(): string
     {
-        return 'dotterbolaget';
+        return 'db';
     }
 
     public function filterDonor(Donor $donor): bool
     {
-        if (!$donor->getState()->isActive()) {
+        if (!$donor->getState() instanceof Active) {
             return false;
         }
 
@@ -52,7 +60,7 @@ class DotterbolagetFormatter implements FormatterInterface
 
     public function getName(): string
     {
-        return 'dotterbolaget';
+        return 'db';
     }
 
     public function initialize(OutputInterface $output): void
@@ -83,8 +91,3 @@ class DotterbolagetFormatter implements FormatterInterface
         }
     }
 }
-
-return new Plugin(
-    new DotterbolagetFilter,
-    new DotterbolagetFormatter
-);
