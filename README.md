@@ -7,5 +7,5 @@ Copy `dotterbolaget-plugin.php` to the plugins directory of your giroapp install
 ## Usage
 
 ```shell
-giroapp ls --filter=dotterbolaget --format=dotterbolaget
+giroapp ls --filter=db --format=db
 ```
