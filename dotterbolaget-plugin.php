@@ -12,12 +12,6 @@ use byrokrat\giroapp\Plugin\Plugin;
 use byrokrat\giroapp\Plugin\ApiVersionConstraint;
 use Symfony\Component\Console\Output\OutputInterface;
 
-return new Plugin(
-    new ApiVersionConstraint('DotterbolagetPlugin', '1.*'),
-    new DotterbolagetFilter,
-    new DotterbolagetFormatter
-);
-
 class DotterbolagetFilter implements FilterInterface
 {
     public function getName(): string
@@ -91,3 +85,10 @@ class DotterbolagetFormatter implements FormatterInterface
         }
     }
 }
+
+
+return new Plugin(
+    new ApiVersionConstraint('DotterbolagetPlugin', '1.*'),
+    new DotterbolagetFilter,
+    new DotterbolagetFormatter
+);
