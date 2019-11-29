@@ -7,7 +7,7 @@ namespace byrokrat\GiroappDotterbolagetPlugin;
 use byrokrat\giroapp\Filter\FilterInterface;
 use byrokrat\giroapp\Formatter\FormatterInterface;
 use byrokrat\giroapp\Domain\Donor;
-use byrokrat\giroapp\Domain\State\Active;
+use byrokrat\giroapp\Domain\State;
 use byrokrat\giroapp\Plugin\Plugin;
 use byrokrat\giroapp\Plugin\ApiVersionConstraint;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,7 +21,7 @@ class DotterbolagetFilter implements FilterInterface
 
     public function filterDonor(Donor $donor): bool
     {
-        if (!$donor->getState() instanceof Active) {
+        if (!$this->isValidDonorState($donor)) {
             return false;
         }
 
@@ -32,6 +32,18 @@ class DotterbolagetFilter implements FilterInterface
         }
 
         return !!preg_match('/dotterbolaget/i', $donor->getComment());
+    }
+
+    private function isValidDonorState(Donor $donor): bool
+    {
+        $state = $donor->getState();
+
+        return $state instanceof State\Active
+            || $state instanceof State\AwaitingTransactionRegistration
+            || $state instanceof State\MandateSent
+            || $state instanceof State\NewDigitalMandate
+            || $state instanceof State\NewMandate
+            || $state instanceof State\TransactionRegistrationSent;
     }
 }
 
