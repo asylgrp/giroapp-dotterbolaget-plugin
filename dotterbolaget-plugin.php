@@ -50,19 +50,9 @@ class DotterbolagetFilter implements FilterInterface
 class DotterbolagetFormatter implements FormatterInterface
 {
     /**
-     * Number of addresses on each line in output
-     */
-    const ITEMS_ON_LINE = 5;
-
-    /**
      * @var OutputInterface
      */
     private $output;
-
-    /**
-     * @var string[]
-     */
-    private $addresses;
 
     public function getName(): string
     {
@@ -72,29 +62,44 @@ class DotterbolagetFormatter implements FormatterInterface
     public function initialize(OutputInterface $output): void
     {
         $this->output = $output;
-        $this->addresses = [];
+        $this->output->writeln('"Namn","Adress","Postnummer","Ort"');
     }
 
     public function formatDonor(Donor $donor): void
     {
-        $address = array_filter([
-            $donor->getName(),
-            $donor->getPostalAddress()->getLine1(),
-            $donor->getPostalAddress()->getLine2(),
-            $donor->getPostalAddress()->getLine3(),
-            "{$donor->getPostalAddress()->getPostalCode()} {$donor->getPostalAddress()->getPostalCity()}"
-        ]);
+        $address = trim(
+            sprintf(
+                "%s\n%s\n%s",
+                $donor->getPostalAddress()->getLine1(),
+                $donor->getPostalAddress()->getLine2(),
+                $donor->getPostalAddress()->getLine3()
+            )
+        );
 
-        $this->addresses[$donor->getName()] = implode(PHP_EOL, $address);
+        $this->output->writeln(
+            sprintf(
+                '"%s","%s","%s","%s"',
+                $donor->getName(),
+                $address,
+                self::formatPostalCode($donor),
+                $donor->getPostalAddress()->getPostalCity()
+            )
+        );
     }
 
     public function finalize(): void
     {
-        ksort($this->addresses);
+    }
 
-        foreach (array_chunk($this->addresses, self::ITEMS_ON_LINE) as $chunk) {
-            $this->output->writeln('"' . implode('", "', $chunk) . '"');
+    private static function formatPostalCode(Donor $donor): string
+    {
+        $code = $donor->getPostalAddress()->getPostalCode();
+
+        if (strlen($code) != 5) {
+            throw new \Exception("Postal code '$code' for donor '{$donor->getName()}' does not contain 5 characters");
         }
+
+        return substr($code, 0, 3) . ' ' . substr($code, -2);
     }
 }
 
