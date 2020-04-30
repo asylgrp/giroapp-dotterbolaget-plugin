@@ -25,7 +25,13 @@ class DotterbolagetFilter implements FilterInterface
             return false;
         }
 
-        foreach ($donor->getAttributes() as $key => $value) {
+        $attributes = $donor->getAttributes();
+
+        if (isset($attributes['online_form_id']) && $attributes['online_form_id'] == 'dotterbolaget') {
+            return true;
+        }
+
+        foreach ($attributes as $key => $value) {
             if (preg_match('/^dotterbolaget$/i', $key)) {
                 return !!$value;
             }
