@@ -91,6 +91,21 @@ class DotterbolagetFormatter implements FormatterInterface
                 $donor->getPostalAddress()->getPostalCity()
             )
         );
+
+        // Print extra addresses
+        foreach ($donor->getAttributes() as $attr => $value) {
+            if (str_starts_with($attr, 'DB_EXTRA_ADDRESS')) {
+                $this->output->writeln("{$donor->getName()} extra adress:");
+
+                $data = str_getcsv($value);
+
+		if (count($data) != 4) {
+                    throw new \Exception("Invalid CSV data in DB_EXTRA_ADDRESS field, found: $value");
+		}
+
+                $this->output->writeln("\"{$data[0]}\",\"{$data[1]}\",\"{$data[2]}\",\"{$data[3]}\"");
+            }
+        }
     }
 
     public function finalize(): void
